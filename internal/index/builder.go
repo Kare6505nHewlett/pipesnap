@@ -33,14 +33,14 @@ func (b *Builder) Build() (*Index, error) {
 			break
 		}
 		if err != nil {
-			return nil, fmt.Errorf("index builder: read header at seq %d: %w", seq, err)
+			return nil, fmt.Errorf("index builder: read header at seq %d (offset %d): %w", seq, offset, err)
 		}
 
 		b.idx.Add(seq, offset, hdr.Size)
 
 		// Skip over the payload bytes.
 		if _, err := io.CopyN(io.Discard, b.r, int64(hdr.Size)); err != nil {
-			return nil, fmt.Errorf("index builder: skip payload seq %d: %w", seq, err)
+			return nil, fmt.Errorf("index builder: skip payload seq %d (offset %d, size %d): %w", seq, offset, hdr.Size, err)
 		}
 
 		seq++

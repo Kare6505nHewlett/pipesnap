@@ -39,7 +39,7 @@ func Read(path string, opts Options) ([]Chunk, error) {
 			break
 		}
 		if err != nil {
-			return nil, fmt.Errorf("tail: read chunk: %w", err)
+			return nil, fmt.Errorf("tail: read chunk %d: %w", index, err)
 		}
 		all = append(all, Chunk{Index: index, Data: buf})
 		index++

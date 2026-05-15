@@ -67,6 +67,13 @@ func Collect(paths []string) ([]Entry, error) {
 	return entries, nil
 }
 
+// CollectFrom reads all chunks from a single snapshot path and returns them
+// as a slice of Entry values. This is a convenience wrapper around Collect
+// for the common case of processing one snapshot at a time.
+func CollectFrom(path string) ([]Entry, error) {
+	return Collect([]string{path})
+}
+
 func drainSnapshot(dst io.Writer, path string) (int64, error) {
 	r, err := snapshot.OpenReader(path)
 	if err != nil {

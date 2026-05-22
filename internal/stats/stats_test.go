@@ -62,3 +62,14 @@ func TestSummary(t *testing.T) {
 		t.Fatal("expected positive elapsed in summary")
 	}
 }
+
+func TestRecordChunkZeroBytes(t *testing.T) {
+	c := New()
+	c.RecordChunk(0)
+	if c.Chunks != 1 {
+		t.Fatalf("expected 1 chunk after zero-byte record, got %d", c.Chunks)
+	}
+	if c.Bytes != 0 {
+		t.Fatalf("expected 0 bytes after zero-byte record, got %d", c.Bytes)
+	}
+}

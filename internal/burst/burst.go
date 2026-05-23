@@ -57,6 +57,14 @@ func (l *Limiter) Allow() {
 	}
 }
 
+// Available returns the current number of available tokens without consuming any.
+func (l *Limiter) Available() int {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.addTokens()
+	return l.tokens
+}
+
 // addTokens refills tokens based on elapsed time. Must be called with mu held.
 func (l *Limiter) addTokens() {
 	now := time.Now()

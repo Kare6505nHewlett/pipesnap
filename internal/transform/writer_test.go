@@ -70,3 +70,19 @@ func TestWriterMultipleWrites(t *testing.T) {
 		t.Fatalf("got %q", buf.String())
 	}
 }
+
+func TestWriterEmptyWrite(t *testing.T) {
+	var buf bytes.Buffer
+	w := transform.NewWriter(&buf, transform.UpperCase)
+
+	n, err := w.Write([]byte{})
+	if err != nil {
+		t.Fatalf("unexpected error on empty write: %v", err)
+	}
+	if n != 0 {
+		t.Fatalf("expected n=0, got %d", n)
+	}
+	if buf.Len() != 0 {
+		t.Fatalf("expected empty buffer after empty write, got %q", buf.String())
+	}
+}

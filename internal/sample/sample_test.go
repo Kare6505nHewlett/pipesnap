@@ -53,6 +53,30 @@ func TestSampleEveryThird(t *testing.T) {
 	}
 }
 
+// TestSampleDroppedPlusSampledEqualsSeen verifies that the number of dropped
+// chunks and sampled chunks always sum to the total seen.
+func TestSampleDroppedPlusSampledEqualsSeen(t *testing.T) {
+	for _, n := range []int{1, 2, 5, 10} {
+		s, err := New(n)
+		if err != nil {
+			t.Fatalf("New(%d) unexpected error: %v", n, err)
+		}
+		const total = 20
+		var passed int
+		for i := 0; i < total; i++ {
+			if s.Sample() {
+				passed++
+			}
+		}
+		if s.Seen() != total {
+			t.Errorf("n=%d: expected Seen()=%d, got %d", n, total, s.Seen())
+		}
+		if s.Dropped()+passed != total {
+			t.Errorf("n=%d: Dropped(%d)+passed(%d) != total(%d)", n, s.Dropped(), passed, total)
+		}
+	}
+}
+
 func TestNewWriterInvalidN(t *testing.T) {
 	_, err := NewWriter(&bytes.Buffer{}, 0)
 	if err == nil {

@@ -106,3 +106,21 @@ func TestCollectSourceField(t *testing.T) {
 	}
 	_ = os.Remove(p)
 }
+
+func TestMergeSingleFile(t *testing.T) {
+	dir := t.TempDir()
+	p := writeSnap(t, dir, "only.snap", [][]byte{[]byte("sole content")})
+
+	var buf bytes.Buffer
+	n, err := merge.Merge(&buf, []string{p})
+	if err != nil {
+		t.Fatalf("Merge: %v", err)
+	}
+	const want = "sole content"
+	if buf.String() != want {
+		t.Errorf("got %q, want %q", buf.String(), want)
+	}
+	if n != int64(len(want)) {
+		t.Errorf("bytes reported: got %d, want %d", n, len(want))
+	}
+}

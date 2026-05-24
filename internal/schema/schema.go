@@ -32,9 +32,22 @@ type Schema struct {
 }
 
 // New creates a Schema from the provided field definitions.
+// It returns an error if no fields are provided or if any field has an
+// empty name or an unrecognised FieldType.
 func New(fields []Field) (*Schema, error) {
 	if len(fields) == 0 {
 		return nil, fmt.Errorf("schema: at least one field is required")
+	}
+	for _, f := range fields {
+		if f.Name == "" {
+			return nil, fmt.Errorf("schema: field name must not be empty")
+		}
+		switch f.Type {
+		case TypeString, TypeNumber, TypeBoolean, TypeObject, TypeArray:
+			// valid
+		default:
+			return nil, fmt.Errorf("schema: field %q has unknown type %q", f.Name, f.Type)
+		}
 	}
 	return &Schema{fields: fields}, nil
 }

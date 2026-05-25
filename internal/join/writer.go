@@ -8,6 +8,15 @@ type Writer struct {
 	j *Joiner
 }
 
+// NewWriter wraps the provided Joiner in a Writer so it can be used anywhere
+// an io.WriteCloser is accepted.
+func NewWriter(j *Joiner) *Writer {
+	if j == nil {
+		panic("join: NewWriter called with nil Joiner")
+	}
+	return &Writer{j: j}
+}
+
 // Write adds p to the joiner's buffer. The length of p is always returned so
 // that callers that wrap this writer see no short-write errors even when the
 // joiner is still accumulating.

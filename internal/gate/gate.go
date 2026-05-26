@@ -96,3 +96,12 @@ func (g *Gate) Passed() int {
 	defer g.mu.Unlock()
 	return g.passed
 }
+
+// Stats returns a snapshot of the seen and passed chunk counts in a single
+// atomic read, avoiding two separate lock acquisitions when both values are
+// needed together.
+func (g *Gate) Stats() (seen, passed int) {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	return g.seen, g.passed
+}
